@@ -22,6 +22,9 @@ public interface PersistenceLoginService {
 	
 	// 토큰 유효성 체크(만료 여부 확인)
 	public boolean isValid(String token);
+	
+	// 토큰 삭제
+	public boolean delete(String username);
 		
 	}
 

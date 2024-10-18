@@ -161,4 +161,23 @@ public Persistence_logins selectBytoken(String token) {
 		
 	}
 	
+
+	// 토큰 삭제
+	public boolean delete(String username) {
+		boolean result = false;
+		String sql = " DELETE FROM persistence_logins "
+					+" WHERE username = ? ";
+		
+		try {
+			psmt = con.prepareStatement(sql);
+			psmt.setString(1, username);
+			result = psmt.executeUpdate() == 0 ? false : true ;
+			
+		} catch (Exception e) {
+			System.err.println("토큰 삭제 시, 예외 발생");
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 }

@@ -69,4 +69,10 @@ public class PersistenceLoginServiceImpl implements PersistenceLoginService {
 		return true;
 	}
 
+	@Override
+	public boolean delete(String username) {
+		boolean result = persistenceLoginsDAO.delete(username);
+		return result;
+	}
+
 }
