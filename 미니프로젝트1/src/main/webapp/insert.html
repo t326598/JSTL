@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>글 상세페이지</title>
+<script src="js/jquery-3.7.1.min.js"></script>
+<script src="js/insert.js"></script>
+<style type="text/css">
+.input-content {
+	border: 6px solid black;
+	width: 100%;
+	padding: 10px;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+
+		<div class="title-box">
+			<h1 class="main-title">글상세페이지</h1>
+
+			<form action="insert_pro.jsp" method="post" enctype="multipart/form-data">
+				<div class="input-group">
+					<label for="title">제목 :</label> <input type="text" name="title"
+						placeholder="제목을 입력하세요" id="title"> <label for="type">주제
+						:</label> <select name="type" id="type">
+						<option value="1">전자/게임</option>
+						<option value="2">운동</option>
+						<option value="3">의류</option>
+						<option value="4">가구</option>
+						<option value="5">기타</option>
+					</select>
+				</div>
+				<div class="input-group">
+					<label for="writer">작성자 :</label> <input type="text" name="writer"
+						placeholder="작성자를 입력하세요" id="writer" required>
+				</div>
+
+				<div class="input-group">
+					<label for="image">이미지 첨부:</label> <input type="file" name="image"
+						id="image" accept="image/*">
+				</div>
+
+
+				<!-- 이미지가 업로드된 후 이곳에 표시 -->
+				<div class="input-content">
+					<div class="input-group">
+						<img id="uploadedImage" src=""
+							style="max-width: 200px; height: auto;">
+					</div>
+
+					<div class="input-group">
+						<label for="content">내용:</label>
+						<textarea name="content" id="content" cols="30" rows="10"
+							style="width: 100%;"></textarea>
+					</div>
+
+					<div class="button">
+						<input type="submit" id="insert" onclick="" value="등록하기" /> <input
+							type="submit" id="main" onclick="back()" value="목록으로" />
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+
+	<script>
+		document
+				.getElementById('image')
+				.addEventListener(
+						'change',
+						function(event) {
+							const file = event.target.files[0];
+							if (file) {
+								const reader = new FileReader();
+								reader.onload = function(e) {
+									document.getElementById('uploadedImage').src = e.target.result;
+								}
+								reader.readAsDataURL(file); // 파일을 읽어 미리보기로 표시
+							}
+						});
+	</script>
+</body>
+</html>
