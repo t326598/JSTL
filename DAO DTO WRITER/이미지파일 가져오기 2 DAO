@@ -1,0 +1,73 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class BoardDTO {
+    private int boardId;
+    private String title;
+    private String writer;
+    private List<FileDTO> fileList;  // 파일 정보를 저장할 리스트
+
+    public BoardDTO() {
+        this.fileList = new ArrayList<>();  // 리스트 초기화
+    }
+
+    // Getter와 Setter
+    public int getBoardId() { return boardId; }
+    public void setBoardId(int boardId) { this.boardId = boardId; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getWriter() { return writer; }
+    public void setWriter(String writer) { this.writer = writer; }
+
+    public List<FileDTO> getFileList() { return fileList; }
+    public void setFileList(List<FileDTO> fileList) { this.fileList = fileList; }
+
+    public void addFile(FileDTO file) {
+        this.fileList.add(file);  // 파일을 리스트에 추가
+    }
+}
+
+
+public BoardDTO getBoardWithFiles(int boardId) {
+    String sql = "SELECT b.title, b.writer, f.file_name, f.file_path " +
+                 "FROM board b LEFT JOIN file f ON b.board_id = f.board_id " +
+                 "WHERE b.board_id = ?";
+
+    BoardDTO board = null;
+
+    try (Connection conn = DatabaseUtil.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        pstmt.setInt(1, boardId);
+        ResultSet rs = pstmt.executeQuery();
+
+        while (rs.next()) {
+            if (board == null) {
+                board = new BoardDTO();
+                board.setBoardId(boardId);
+                board.setTitle(rs.getString("title"));
+                board.setWriter(rs.getString("writer"));
+            }
+
+            // 파일 정보를 추가하는 로직
+            String fileName = rs.getString("file_name");
+            String filePath = rs.getString("file_path");
+
+            if (fileName != null && filePath != null) {  // 파일 정보가 있는 경우에만 추가
+                FileDTO file = new FileDTO();
+                file.setFileName(fileName);
+                file.setFilePath(filePath);
+
+                // 파일 정보를 BoardDTO의 리스트에 추가
+                board.addFile(file);
+            }
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return board;
+}

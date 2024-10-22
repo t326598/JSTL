@@ -1,0 +1,25 @@
+<%@ page import="your.package.BoardDAO" %>
+<%@ page import="your.package.BoardDTO" %>
+<%@ page import="your.package.FileDTO" %>
+
+<%
+    int boardId = Integer.parseInt(request.getParameter("boardId"));
+    BoardDAO boardDAO = new BoardDAO();
+    BoardDTO board = boardDAO.getBoardWithFiles(boardId);
+%>
+
+<h1><%= board.getTitle() %></h1>
+<p>작성자: <%= board.getWriter() %></p>
+
+<h3>첨부된 파일들:</h3>
+<ul>
+<% 
+    for (FileDTO file : board.getFileList()) { 
+%>
+    <li>
+        <a href="<%= file.getFilePath() %>"><%= file.getFileName() %></a>
+    </li>
+<% 
+    } 
+%>
+</ul>
