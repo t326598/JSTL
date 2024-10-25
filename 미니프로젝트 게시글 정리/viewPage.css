@@ -1,0 +1,104 @@
+@charset "UTF-8";
+
+
+* { margin: 0; padding: 0;box-sizing: border-box;}
+
+.container{
+ width: 1200px;
+ margin: 0 auto;
+ text-align: center;
+ 
+ 
+}
+
+.sellUser{
+	display: flex;
+	justify-content: flex-end;
+	margin: 5px;
+	font-size: 30px;
+}
+
+.title{
+ font-size: 45px;
+}
+
+
+.inputed{
+    border: 3px solid #000;
+    width: 100%;
+	padding: 25px;
+    
+}
+
+#content{
+    height: 300px;
+}
+
+
+.button{
+    padding: 10px;
+    display: flex;
+    justify-content: right;
+}
+
+.button #insert:hover{
+    background-color: rgb(235, 171, 98);
+   
+    
+}
+
+.button #main:hover{
+  
+    background-color: rgb(24, 255, 139);
+    
+}
+
+.button #insert{
+    cursor: pointer;
+    background-color: rgb(241, 157, 60);
+    font-size: large;
+    border-radius: 10%;
+    padding: 10px;
+    margin-left: 15px;
+}
+
+.button #main{
+    cursor: pointer;
+    background-color: rgb(86, 182, 86);
+    font-size: large;
+    padding: 10px;
+   border-radius: 10%;
+}
+
+#input_title{
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    width: 100%;
+}
+#img_input{
+    display: flex;
+    justify-content: center;
+  
+}
+
+#content{
+    padding: 20px;
+    font-size: 20px;
+}
+
+#update{
+    cursor: pointer;
+    font-size: large;
+    padding: 10px;
+   border-radius: 10%;
+}
+
+#delete{
+    cursor: pointer;
+    font-size: large;
+    padding: 10px;
+   border-radius: 10%;
+   margin-left: 15px;
+
+}
