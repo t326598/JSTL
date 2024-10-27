@@ -1,0 +1,218 @@
+<%@page import="service.UserService"%>
+<%@page import="service.UserServiceImpl"%>
+<%@page import="java.util.List"%>
+<%@page import="service.FilesServiceImpl"%>
+<%@page import="service.FilesService"%>
+<%@page import="dto.Files"%>
+<%@page import="service.BoardServiceImpl"%>
+<%@page import="dto.Board"%>
+<%@page import="dto.User"%>
+<%@page import="service.BoardService"%>
+<%@page import="lombok.EqualsAndHashCode.Include"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+
+<%
+int boardNo = Integer.parseInt(request.getParameter("no"));
+
+// BoardService를 통해 게시글의 상세 내용을 가져옴
+BoardService boardService = new BoardServiceImpl();
+	Board board = boardService.select(boardNo);
+	
+	FilesService filesService = new FilesServiceImpl();
+	Files file = filesService.select(boardNo); // 단일 파일 객체 가져오기
+ 
+    UserService user1 = new UserServiceImpl();
+    User sellerUser = user1.select(board.getUuid());
+    
+
+						List<Board> boardList = new ArrayList();
+						Files file = new Files();
+						boardList = boardService.list();
+						int maxCount = boardList.size();
+						int count = 0;
+						System.out.println(count);
+						if(maxCount > 6){
+							count=maxCount-6;
+						}
+				
+    
+%>
+
+<script>
+function openPopup() {
+    window.open("declaration.jsp?no=<%=board.getNo()%>", "팝업창", "width=600,height=400,resizable=yes");
+}
+</script>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>판매글 등록하기</title>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/insert.js"></script>
+    <script src="hf.js"></script>
+    <link rel="stylesheet" href="static/css/viewPage.css">
+</head>
+<body>
+
+	<jsp:include page="header.jsp"></jsp:include>
+
+    <div class="container">
+        <div class="title-box">
+    
+            <h1 class="main-title" style="margin-top: 20px; font-size: 50px">판매글</h1>
+            <br>
+         
+          <%
+          User user=null;
+          if(session.getAttribute("loginUser")!=null){
+        	  user = (User) session.getAttribute("loginUser");
+          
+          if( user.getUuid() == board.getUuid()){
+        		   %>
+						<div class="button">
+                       <input  value="수정하기" type="button" id="update" onclick="location.href='updatePage.jsp?no=<%=board.getNo() %>'" />
+                <input type="button" id="delete" value="삭제하기" onclick="location.href='delete_pro.jsp?no=<%=board.getNo() %>'" />
+            </div>  
+		<%
+          }
+          }
+          
+          
+		%>
+
+				
+    		
+    	<label class="sellUser" >판매자: <%= sellerUser.getId() %></label>
+    	<br>
+         
+            <!-- 폼 액션을 서블릿으로 설정, enctype 추가 -->
+      
+           <div class="date">
+                <label for="regdate">등록일자: <%=board.getRegdate%></label>
+                <label for="regdate">수정일자: <%=board.getUpddate%></label>
+
+            </div>
+            <br>
+   
+            <div class="inputed">
+
+                    <!-- bg 이미지 추가 -->
+                <img class="bgImg" src="static/img/default_apple.png" alt="">
+                    <div class="input-group">
+                        <div class="title-box">
+                        <h2 class="title" ><%= board.getTitle() %></h2>
+                    </div>
+                <br>
+                
+                	
+                    
+              <div class="content-box"  id="input_title">
+                  
+                        <label for="category">카테고리: <%= board.getCategory() %> &nbsp; &nbsp;&nbsp;&nbsp; </label>
+                        
+
+                        <label for="status"> <%= board.getStatus() == 1 ? "판매 중" : "판매 완료" %>  &nbsp; &nbsp;&nbsp;&nbsp;</label>
+                        
+						 <label>가격: <%= board.getPrice() %>원 &nbsp;&nbsp;&nbsp;&nbsp;</label>
+
+                         </div>
+                 
+                        </div>
+                        <br><br>
+                      
+                   <%if (file != null && file.getFile_path() != null) {  %>
+        				<img id="uploadedImage" src="/04_jsp_market/img?no=<%= file.getTable_no() %>" style="max-width: 400px; height: auto;" />
+				  	<%
+				    } else {
+				    %>
+				        <p>이미지가 없습니다.</p>
+				    <%
+				    } 
+				    %>
+                    <br><br>
+                    
+                    <div class="input-group">
+                        <pre for="content" id="content"><%= board.getContent() %> </pre>
+                        </div>
+                        
+                        <!-- 신고버튼 생성 -->
+                    </div>
+			<c:if test="${sessionScope.loginId != null}">
+
+				<div class="btn">
+					<input type="button" id="Declaration" class="dec"
+						onclick="openPopup()"
+						value="게시글신고" />
+				</div>
+			</c:if>
+
+			<div class="button">
+                <input type="button" id="main" onclick="window.location.href='boardList.jsp';" value="목록으로" />
+                <input type="submit" id="insert" value="채팅하기" />
+            </div>      
+        </div>  
+
+        <div class="card-box">
+            <!-- 카드 -->
+            <%
+                for(int i=maxCount-1 ; i>count-1;i--){
+            %>	
+            <div class="card">
+                <div class="card-img">
+                    <a href="viewPage.jsp?no=<%= + boardList.get(i).getNo() %>">
+                        <%
+                            file = fileService.select(boardList.get(i).getNo(),"board");
+                            
+                        if(file == null){
+                        %>
+                            <img src="static/img/default_apple.png"width="100%" alt="" onerror="this.onerror=null; this.src='static/img/default_apple.png';">
+                        <%
+                        }else{
+                        %>
+                            <img src="<%=file.getFile_path() %>"width="100%" alt="" onerror="this.onerror=null; this.src='static/img/default_apple.png';">
+                        <%
+                        }
+                        %>
+                    
+                    </a>
+                </div>
+                <div class="card-title">
+                    <h2>
+                        <a href="viewPage.jsp?no=<%= + boardList.get(i).getNo() %>">
+                            <%= boardList.get(i).getTitle() %>
+                        </a>
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <p>가격 : <%= boardList.get(i).getPrice() %></p>
+                </div>
+                <div class="card-bottom">
+                    <div class="item">
+                        <span>분류/<%=boardList.get(i).getCategory() %></span>
+                    </div>
+                </div>
+            </div>
+            <%
+                }
+            %>
+        </div>
+        <div class="shoplus">
+            <a href="test.jsp">더보기..</a>
+        </div>
+        </div>
+
+
+
+    <jsp:include page="footer.jsp"></jsp:include>
+</body>
+</html>
